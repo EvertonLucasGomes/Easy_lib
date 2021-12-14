@@ -12,6 +12,8 @@ public class Livro {
     private int quantidade;
     private String genero;
 
+    public Livro() {
+    }
 
     public Livro(int codigo, String prateleira, int ano, String nome, String estante, String autor, String editora, int quantidade, String genero) {
         this.codigo = codigo;

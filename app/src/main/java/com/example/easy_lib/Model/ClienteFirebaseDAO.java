@@ -1,11 +1,15 @@
 package com.example.easy_lib.Model;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.List;
 
-public class ClienteFirebaseDAO implements IClienteDAO{
+public class ClienteFirebaseDAO implements IClienteFirebaseDAO{
 
     private DatabaseReference databaseReference;
     private final String father = Cliente.class.getSimpleName();
@@ -19,38 +23,42 @@ public class ClienteFirebaseDAO implements IClienteDAO{
     }
 
     @Override
-    public void insertCliente(Cliente cliente) {
-        //INSERE O CLIENTE
-        databaseReference.child(father).push().setValue(cliente);
+    public Task<Void> insertCliente(Cliente cliente) {
+        //.d("ENTROU", "insertCliente: " + cliente);
+        //CPF PARA PAI DO NÓ SEM PONTOS E TRAÇOS
+        String cpf_formated = cliente.getCpf().replace(".", "").replace("-", "");
+
+        //ADICIONA NO BD
+        return databaseReference.child(father).child(cpf_formated).setValue(cliente);
     }
 
     @Override
-    public void updateCliente(Cliente cliente) {
-
-    }
-
-    @Override
-    public void deleteCliente(String cpf) {
-
-    }
-
-    @Override
-    public List<Cliente> getTodosClientes() {
+    public Task<Void> updateCliente(Cliente cliente) {
         return null;
     }
 
     @Override
-    public Cliente getCliente(String cpf) {
+    public Task<Void> deleteCliente(String cpf) {
         return null;
     }
 
     @Override
-    public List<Cliente> getClientePorNome(String nome) {
+    public Query getTodosClientes() {
         return null;
     }
 
     @Override
-    public int getQuantidadeClientes() {
-        return 0;
+    public Query getCliente(String cpf) {
+        return null;
+    }
+
+    @Override
+    public Query getClientePorNome(String nome) {
+        return null;
+    }
+
+    @Override
+    public Query getQuantidadeClientes() {
+        return null;
     }
 }

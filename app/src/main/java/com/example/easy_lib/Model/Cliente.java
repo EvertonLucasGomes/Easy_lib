@@ -14,6 +14,9 @@ public class Cliente implements ICliente {
     private String rua;
     private String numero_complemento;
 
+    public Cliente() {
+    }
+
     public Cliente(String cpf, String nome, String data_nascimento, String telefone, String cidade, String bairro, String rua, String numero_complemento) {
         this.cpf = cpf;
         this.nome = nome;
@@ -93,6 +96,17 @@ public class Cliente implements ICliente {
         this.numero_complemento = numero_complemento;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "cpf='" + cpf + '\'' +
+                ", nome='" + nome + '\'' +
+                ", data_nascimento='" + data_nascimento + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", cidade='" + cidade + '\'' +
+                ", bairro='" + bairro + '\'' +
+                ", rua='" + rua + '\'' +
+                ", numero_complemento='" + numero_complemento + '\'' +
+                '}';
+    }
 }

@@ -2,8 +2,6 @@ package com.example.easy_lib.Controller;
 
 import com.example.easy_lib.Model.Cliente;
 
-import java.util.List;
-
 public interface IOnClienteController {
     void insertCliente (String nome, String cpf, String data_nascimento, String telefone, String rua, String numero, String bairro, String cidade);
     void updateCliente (String nome, String cpf, String data_nascimento, String telefone, String rua, String numero, String bairro, String cidade);
@@ -13,4 +11,6 @@ public interface IOnClienteController {
     void onExibirCliente(String cpf);
     void onExibirClientesPorNome (String nome);
     void onExibirQuantidadeClientes();
+
+    boolean onValidarCampos(Cliente cliente);
 }
