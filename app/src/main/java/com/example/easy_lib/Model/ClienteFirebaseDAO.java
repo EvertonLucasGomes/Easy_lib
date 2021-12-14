@@ -61,4 +61,10 @@ public class ClienteFirebaseDAO implements IClienteFirebaseDAO{
     public Query getQuantidadeClientes() {
         return null;
     }
+
+    @Override
+    public Query existCliente(String cpf) {
+        //RETORNA A QUERY COM O CLIENTE
+        return databaseReference.child(father).orderByChild("cpf").equalTo(cpf);
+    }
 }

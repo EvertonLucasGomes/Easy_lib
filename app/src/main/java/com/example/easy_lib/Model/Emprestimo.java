@@ -1,31 +1,46 @@
 package com.example.easy_lib.Model;
 
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class Emprestimo implements IEmprestimo {
 
-    private int codigo;
+    private String uid;
     private String dataEmprestimo;
     private String dataDevolucao;
     private String status;
-    private String cpfUsuario;
-    private int codLivro;
 
-    public Emprestimo(int codigo, String dataEmprestimo, String dataDevolucao, String status, String cpfUsuario, int codLivro) {
-        this.codigo = codigo;
+    private String cpfCliente;
+    private String nomeCliente;
+
+    private String codLivro;
+    private String nomeLivro;
+
+    public Emprestimo() {
+    }
+
+    public Emprestimo(String dataEmprestimo, String dataDevolucao, String status, String cpfCliente, String nomeCliente, String codLivro, String nomeLivro) {
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucao = dataDevolucao;
         this.status = status;
-        this.cpfUsuario = cpfUsuario;
+        this.cpfCliente = cpfCliente;
+        this.nomeCliente = nomeCliente;
         this.codLivro = codLivro;
+        this.nomeLivro = nomeLivro;
     }
 
-    public int getCodigo() {
-        return codigo;
+    public String getUid() {
+        return uid;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getDataEmprestimo() {
@@ -52,36 +67,52 @@ public class Emprestimo implements IEmprestimo {
         this.status = status;
     }
 
-    public String getCpfUsuario() {
-        return cpfUsuario;
+    public String getCpfCliente() {
+        return cpfCliente;
     }
 
-    public void setCpfUsuario(String cpfUsuario) {
-        this.cpfUsuario = cpfUsuario;
+    public void setCpfCliente(String cpfCliente) {
+        this.cpfCliente = cpfCliente;
     }
 
-    public int getCodLivro() {
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getCodLivro() {
         return codLivro;
     }
 
-    public void setCodLivro(int codLivro) {
+    public void setCodLivro(String codLivro) {
         this.codLivro = codLivro;
     }
 
-    @Override
-    public double calcularMulta(Date dataAtual) {
-        return 0;
+    public String getNomeLivro() {
+        return nomeLivro;
     }
 
+    public void setNomeLivro(String nomeLivro) {
+        this.nomeLivro = nomeLivro;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public String toString() {
-        return "Emprestimo{" +
-                "codigo=" + codigo +
-                ", dataEmprestimo='" + dataEmprestimo + '\'' +
-                ", dataDevolucao='" + dataDevolucao + '\'' +
-                ", status='" + status + '\'' +
-                ", cpfUsuario='" + cpfUsuario + '\'' +
-                ", codLivro=" + codLivro +
-                '}';
+    public double calcularMulta() {
+        LocalDate dataAtual = LocalDate.now();
+        LocalDate dataDevolucaoDate = LocalDate.parse(dataDevolucao);
+
+        //CALCULA A TAXA CASO SEJA DIFERENTE DA ATUAL
+        if(dataAtual.equals(dataDevolucaoDate) || dataDevolucaoDate.isBefore(dataAtual))
+            return 0;
+
+        //QUANTIDADE DE DIAS ENTRE AS DATAS
+        long noOfDaysBetween = ChronoUnit.DAYS.between(dataAtual, dataDevolucaoDate);
+
+        //RETORNA A MULTA
+        return TAXA_ATRASO + (noOfDaysBetween * MULTA_POR_DIA);
     }
 }
