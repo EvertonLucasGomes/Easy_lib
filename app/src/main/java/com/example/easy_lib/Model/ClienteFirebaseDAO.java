@@ -1,13 +1,21 @@
 package com.example.easy_lib.Model;
 
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ClienteFirebaseDAO implements IClienteFirebaseDAO{
 
@@ -62,9 +70,38 @@ public class ClienteFirebaseDAO implements IClienteFirebaseDAO{
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public Query existCliente(String cpf) {
+    public boolean existCliente(String cpf){
+        boolean[] exist = {false, false};
+
         //RETORNA A QUERY COM O CLIENTE
-        return databaseReference.child(father).orderByChild("cpf").equalTo(cpf);
+        Query query = databaseReference.child(father).orderByChild("cpf").equalTo(cpf);
+
+        CompletableFuture.runAsync(() -> {
+            // method call or code to be asynch.
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for(DataSnapshot obj: snapshot.getChildren()){
+                        Cliente cliente = obj.getValue(Cliente.class);
+
+                        Log.d("EXIST_CLIENTE", "onDataChange: " + cliente);
+                        exist[0] = true;
+                        break;
+                    }
+
+                    exist[1] = true;
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        });
+
+        return exist[0];
     }
 }

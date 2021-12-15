@@ -15,5 +15,5 @@ public interface IClienteFirebaseDAO {
     Query getClientePorNome (String nome);
     Query getQuantidadeClientes();
 
-    Query existCliente(String cpf);
+    boolean existCliente(String cpf);
 }
