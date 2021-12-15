@@ -73,35 +73,51 @@ public class ClienteFirebaseDAO implements IClienteFirebaseDAO{
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean existCliente(String cpf){
-        boolean[] exist = {false, false};
-
-        //RETORNA A QUERY COM O CLIENTE
-        Query query = databaseReference.child(father).orderByChild("cpf").equalTo(cpf);
 
         CompletableFuture.runAsync(() -> {
             // method call or code to be asynch.
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+            readData(new FirebaseCallBack() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    for(DataSnapshot obj: snapshot.getChildren()){
-                        Cliente cliente = obj.getValue(Cliente.class);
-
-                        Log.d("EXIST_CLIENTE", "onDataChange: " + cliente);
-                        exist[0] = true;
-                        break;
-                    }
-
-                    exist[1] = true;
+                public void onCallback(boolean result) {
+                    Log.d("EXIST_CLIENTE", "onCallback: " + result);
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+            }, cpf);
         });
 
-        return exist[0];
+        return true;
+    }
+
+    private void readData(FirebaseCallBack firebaseCallBack, String cpf){
+        //RETORNA A QUERY COM O CLIENTE
+        Query query = databaseReference.child(father).orderByChild("cpf").equalTo(cpf);
+
+        // method call or code to be asynch.
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                boolean result = false;
+
+                for(DataSnapshot obj: snapshot.getChildren()){
+                    Cliente cliente = obj.getValue(Cliente.class);
+
+                    //Log.d("EXIST_CLIENTE", "onDataChange: " + cliente);
+                    //break;
+                    result = true;
+                }
+
+                firebaseCallBack.onCallback(result);
+                //Log.d("EXIST_CLIENTE", "onDataChange: " + exist[0] + exist[1]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private interface FirebaseCallBack{
+        void onCallback(boolean result);
     }
 }
